@@ -364,3 +364,25 @@ export const updateEventsQuery = (
     }
   );
 };
+
+export const useEventSource = () => {
+  const { handleEvent } = useEventHandlers();
+  const { handleGlobalToast } = useToastNotifications();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const url = new URL('https://mercure.lindev.local/.well-known/mercure');
+    url.searchParams.append('topic', 'https://api/lindev.local/account/events');
+    const newEventSource = new EventSource(url);
+    newEventSource.onmessage = (e) => {
+      handleEvent(JSON.parse(e.data));
+      queryClient.setQueryData(['events'], (prevData: [] = []) => {
+        return [JSON.parse(e.data), ...prevData];
+      });
+      handleGlobalToast(JSON.parse(e.data));
+      return () => {
+        newEventSource.close();
+      };
+    };
+  });
+};

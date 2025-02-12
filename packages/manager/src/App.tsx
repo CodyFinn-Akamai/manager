@@ -16,7 +16,7 @@ import { useInitialRequests } from './hooks/useInitialRequests';
 import { useNewRelic } from './hooks/useNewRelic';
 import { usePendo } from './hooks/usePendo';
 import { MainContent } from './MainContent';
-import { useEventsPoller } from './queries/events/events';
+import { useEventSource } from './queries/events/events';
 // import { Router } from './Router';
 import { useSetupFeatureFlags } from './useSetupFeatureFlags';
 
@@ -60,7 +60,8 @@ const BaseApp = withDocumentTitleProvider(
 );
 
 const GlobalListeners = () => {
-  useEventsPoller();
+  // useEventsPoller();
+  useEventSource();
   useAdobeAnalytics();
   usePendo();
   useNewRelic();
